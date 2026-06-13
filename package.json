@@ -1,0 +1,19 @@
+{
+  "name": "workflow-automation",
+  "version": "1.0.0",
+  "description": "拖拽式工作流自动化平台 - Cross-application drag-and-drop workflow automation",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload",
+    "dev:desktop": "cd desktop && npm start",
+    "init-db": "cd backend && python -c \"from models import create_tables; create_tables(); print('Database initialized')\"",
+    "init-demo": "cd backend && python ../scripts/demo_data.py",
+    "setup": "npm install && cd frontend && npm install && cd ../backend && pip install -r requirements.txt",
+    "postinstall": "cd frontend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

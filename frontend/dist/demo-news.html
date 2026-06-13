@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>舆情监控演示数据 - Demo News</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      padding: 20px;
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 24px 32px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+    .header p {
+      opacity: 0.85;
+      font-size: 14px;
+    }
+    #news-list {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    #news-list .item {
+      background: white;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: transform 0.15s, box-shadow 0.15s;
+      border-left: 4px solid #667eea;
+    }
+    #news-list .item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .summary {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: #888;
+      padding-top: 10px;
+      border-top: 1px solid #f0f0f0;
+    }
+    .source {
+      color: #667eea;
+      font-weight: 500;
+    }
+    .time {
+      color: #999;
+    }
+    .stats {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 16px 24px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      flex: 1;
+    }
+    .stat-card .number {
+      font-size: 28px;
+      font-weight: 700;
+      color: #667eea;
+    }
+    .stat-card .label {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📊 舆情监控演示数据</h1>
+    <p>本页面用于演示"舆情监控→表格汇总→邮件报告"自动化工作流</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="number">5</div>
+      <div class="label">今日舆情</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">4</div>
+      <div class="label">信息来源</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">85%</div>
+      <div class="label">负面舆情</div>
+    </div>
+  </div>
+
+  <div id="news-list">
+    <div class="item">
+      <h3 class="title">大型语言模型在金融领域的应用激增，监管机构发布新指导意见</h3>
+      <p class="summary">
+        监管部门近期发布了关于大型语言模型在金融行业应用的最新指导意见，要求各金融机构在使用AI技术时必须加强风险管控，确保数据安全和消费者权益保护。多家头部金融科技公司表示将积极配合新规。
+      </p>
+      <div class="meta">
+        <span class="source">来源：金融时报</span>
+        <span class="time">2026-06-13 14:30</span>
+      </div>
+    </div>
+
+    <div class="item">
+      <h3 class="title">某电商平台数据泄露事件引发广泛关注，涉及千万用户信息</h3>
+      <p class="summary">
+        据网络安全机构披露，某大型电商平台近日发生严重数据泄露事件，涉及用户姓名、手机号、收货地址等敏感信息。该平台已紧急启动应急预案，并表示将配合相关部门进行全面调查。业内专家呼吁加强电商平台数据安全防护。
+      </p>
+      <div class="meta">
+        <span class="source">来源：科技日报</span>
+        <span class="time">2026-06-13 11:15</span>
+      </div>
+    </div>
+
+    <div class="item">
+      <h3 class="title">新能源汽车市场竞争白热化，多家品牌宣布降价促销</h3>
+      <p class="summary">
+        随着新能源汽车市场竞争日趋激烈，包括特斯拉、比亚迪在内的多家头部品牌今日宣布新一轮降价促销策略。分析师指出，电池成本下降和产能过剩是推动价格战的主要因素，预计下半年新能源汽车销量将迎来新一轮增长。
+      </p>
+      <div class="meta">
+        <span class="source">来源：财经网</span>
+        <span class="time">2026-06-13 09:45</span>
+      </div>
+    </div>
+
+    <div class="item">
+      <h3 class="title">AI芯片出口管制再度升级，半导体行业面临新挑战</h3>
+      <p class="summary">
+        最新消息显示，针对高性能AI芯片的出口管制政策将进一步收紧。业内专家认为，这将对国内AI产业发展产生深远影响，加速国产替代芯片的研发进程。多家国产芯片企业股价今日出现异动。
+      </p>
+      <div class="meta">
+        <span class="source">来源：新华社</span>
+        <span class="time">2026-06-13 08:00</span>
+      </div>
+    </div>
+
+    <div class="item">
+      <h3 class="title">社交媒体平台加强内容审核，AI审核系统准确率突破95%</h3>
+      <p class="summary">
+        多家主流社交媒体平台今日宣布已完成AI内容审核系统的全面升级，不良信息识别准确率首次突破95%。技术团队透露，新系统采用了最新的多模态大模型技术，能够更精准地识别虚假信息、暴力内容和违规广告。
+      </p>
+      <div class="meta">
+        <span class="source">来源：互联网观察</span>
+        <span class="time">2026-06-12 22:00</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
