@@ -1,0 +1,38 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.db
+*.xlsx
+*.xls
+
+# Node
+node_modules/
+frontend/dist/
+desktop/node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp
+/tmp/
+*.tmp
+*.log
+backend/output/
+backend/reports/
+
+# Secrets (add real credentials here)
+.env
+*.secret
