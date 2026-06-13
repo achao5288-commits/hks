@@ -75,7 +75,8 @@ class ExcelChartExecutor(BaseExecutor):
         try:
             output_path = config.get("output_path", "")
             if not output_path:
-                output_path = os.path.join(tempfile.gettempdir(), f"workflow_report_{int(time.time())}.xlsx")
+                desktop = os.path.join(os.path.expanduser("~"), "Desktop")
+                output_path = os.path.join(desktop, f"workflow_report_{int(time.time())}.xlsx")
 
             # Sanitize: remove any column_dimensions with non-letter keys before save
             bad_keys = [k for k in list(ws.column_dimensions)

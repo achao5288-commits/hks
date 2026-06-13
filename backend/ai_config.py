@@ -200,6 +200,7 @@ Rules:
 11. For email attachments: ALWAYS use expression format ${excel_node_id.data.file_path} to reference the Excel file, NEVER hardcode a path.
 12. For data_process field_mapping: the keys are the web_crawler selector "name" values, the values are Chinese display names. Keep the mapping direction correct.
 13. For QQ email, use provider="qq", smtp_host="smtp.qq.com", smtp_port=465. For 163, use provider="163", smtp_host="smtp.163.com", smtp_port=465.
+14. For excel_chart output_path: leave it empty string "" to auto-save to Desktop.
 12. Create a sensible pipeline: trigger -> data_source -> process -> output -> notify.
 
 User requirement: %s
