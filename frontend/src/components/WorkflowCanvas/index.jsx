@@ -47,6 +47,9 @@ export default function WorkflowCanvas() {
   const fetchWorkflowList = useWorkflowStore((s) => s.fetchWorkflowList);
   const workflowList = useWorkflowStore((s) => s.workflowList);
   const deleteWorkflow = useWorkflowStore((s) => s.deleteWorkflow);
+  const previewEdge = useWorkflowStore((s) => s.previewEdge);
+  const setPreviewEdge = useWorkflowStore((s) => s.setPreviewEdge);
+  const clearPreview = useWorkflowStore((s) => s.clearPreview);
   const isSaving = useWorkflowStore((s) => s.isSaving);
   const [showAIModal, setShowAIModal] = useState(false);
   const [selectedWfId, setSelectedWfId] = useState('');
@@ -111,11 +114,6 @@ export default function WorkflowCanvas() {
     },
     [setSelectedNode]
   );
-
-  // Canvas click -> deselect
-  const onPaneClick = useCallback(() => {
-    setSelectedNode(null);
-  }, [setSelectedNode]);
 
   // Context menu
   const onNodeContextMenu = useCallback(
@@ -217,15 +215,32 @@ export default function WorkflowCanvas() {
 
       {/* Canvas */}
       <div className="flex-1">
+        {(() => {
+          // Highlight preview edge
+          const styledEdges = edges.map((e) =>
+            e.id === previewEdge
+              ? { ...e, style: { stroke: '#6366F1', strokeWidth: 3 }, animated: true }
+              : e
+          );
+          return (
         <ReactFlow
           nodes={nodes}
-          edges={edges}
+          edges={styledEdges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onNodeClick={onNodeClick}
-          onPaneClick={onPaneClick}
           onNodeContextMenu={onNodeContextMenu}
+          onEdgeClick={(_, edge) => {
+            const sourceNode = nodes.find((n) => n.id === edge.source);
+            const targetNode = nodes.find((n) => n.id === edge.target);
+            setPreviewEdge(edge.id, {
+              source: { id: edge.source, type: sourceNode?.data?.nodeType, label: sourceNode?.data?.label },
+              target: { id: edge.target, type: targetNode?.data?.nodeType, label: targetNode?.data?.label },
+              sourceConfig: sourceNode?.data?.config || {},
+            });
+          }}
+          onPaneClick={() => { setSelectedNode(null); clearPreview(); }}
           onDragOver={onDragOver}
           onDrop={onDrop}
           nodeTypes={nodeTypes}
@@ -254,7 +269,36 @@ export default function WorkflowCanvas() {
           />
           <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#222" />
         </ReactFlow>
+          );
+        })()}
       </div>
+
+      {/* Data Preview Popup */}
+      {previewEdge && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 bg-surface border border-gray-600 rounded-xl shadow-2xl p-4 min-w-[320px] max-w-[500px] drawer-enter">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold text-blue-400">🔗 数据流预览</span>
+            <button onClick={clearPreview} className="text-gray-500 hover:text-gray-300 text-xs">✕</button>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
+            <span className="px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded font-mono text-[10px]">
+              {useWorkflowStore.getState().previewData?.source?.label || 'source'}
+            </span>
+            <span className="text-gray-600">→</span>
+            <span className="px-2 py-0.5 bg-green-500/20 text-green-300 rounded font-mono text-[10px]">
+              {useWorkflowStore.getState().previewData?.target?.label || 'target'}
+            </span>
+          </div>
+          <div className="bg-gray-900 rounded-lg p-2 max-h-[160px] overflow-y-auto">
+            <pre className="text-[10px] text-gray-300 font-mono whitespace-pre-wrap break-all">
+              {JSON.stringify(useWorkflowStore.getState().previewData?.sourceConfig || {}, null, 1).substring(0, 800)}
+            </pre>
+          </div>
+          <p className="text-[9px] text-gray-600 mt-2">
+            💡 执行后可查看实际数据流。点击画布空白处关闭。
+          </p>
+        </div>
+      )}
 
       {/* AI Workflow Generator Modal */}
       <AIWorkflowGenerator

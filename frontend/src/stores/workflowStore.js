@@ -49,9 +49,14 @@ export const useWorkflowStore = create((set, get) => ({
   presetConfigs: [],
   wsConnection: null,
   unsavedChanges: false,
-  workflowList: [],  // all saved workflows for the load dropdown
+  workflowList: [],
+  previewEdge: null,      // edge being previewed for data
+  previewData: null,      // actual data JSON for the preview
 
   // ---- Workflow List ----
+
+  setPreviewEdge: (edgeId, data) => set({ previewEdge: edgeId, previewData: data }),
+  clearPreview: () => set({ previewEdge: null, previewData: null }),
 
   fetchWorkflowList: async () => {
     try {
@@ -328,15 +333,31 @@ export const useWorkflowStore = create((set, get) => ({
         taskId,
         (logEntry) => {
           set((s) => ({ logs: [...s.logs, logEntry] }));
-          // Update node status based on log
+          // Parse detailed node status from log
           if (logEntry.node_id && logEntry.node_id !== 'engine') {
-            set((s) => ({
-              nodes: s.nodes.map((n) =>
-                n.id === logEntry.node_id
-                  ? { ...n, data: { ...n.data, status: logEntry.level === 'error' ? 'failed' : logEntry.level === 'info' ? 'running' : n.data.status } }
-                  : n
-              ),
-            }));
+            const msg = logEntry.message || '';
+            let newStatus = null;
+            let elapsed = null;
+
+            if (msg.startsWith('[start]')) {
+              newStatus = 'running';
+            } else if (msg.startsWith('[done]')) {
+              newStatus = 'success';
+              const match = msg.match(/([\d.]+)s$/);
+              if (match) elapsed = parseFloat(match[1]);
+            } else if (msg.startsWith('[failed]') || logEntry.level === 'error') {
+              newStatus = 'failed';
+            }
+
+            if (newStatus) {
+              set((s) => ({
+                nodes: s.nodes.map((n) =>
+                  n.id === logEntry.node_id
+                    ? { ...n, data: { ...n.data, status: newStatus, elapsed: elapsed ?? n.data?.elapsed } }
+                    : n
+                ),
+              }));
+            }
           }
         },
         () => {

@@ -109,22 +109,37 @@ function WorkflowNode({ id, data, selected }) {
         </div>
       </div>
 
-      {/* Status dot */}
+      {/* Status indicator */}
       <div className="flex items-center gap-1.5">
-        <div
-          className="rounded-full transition-colors"
-          style={{
-            width: 8,
-            height: 8,
-            backgroundColor: statusColor,
-          }}
-        />
-        <span className="text-xs text-gray-400 capitalize">
-          {data.status === 'pending' ? '待执行' :
-           data.status === 'running' ? '执行中' :
-           data.status === 'success' ? '已完成' :
-           data.status === 'failed' ? '失败' : data.status}
+        <div className="relative flex items-center justify-center" style={{ width: 10, height: 10 }}>
+          {data.status === 'running' ? (
+            <div className="absolute inset-0 rounded-full border-2 border-blue-400 border-t-transparent animate-spin" />
+          ) : (
+            <div
+              className="rounded-full transition-all duration-300"
+              style={{
+                width: data.status === 'success' ? 10 : data.status === 'failed' ? 10 : 7,
+                height: data.status === 'success' ? 10 : data.status === 'failed' ? 10 : 7,
+                backgroundColor: statusColor,
+                boxShadow: data.status === 'success'
+                  ? `0 0 8px ${statusColor}`
+                  : data.status === 'failed'
+                  ? `0 0 8px ${statusColor}`
+                  : 'none',
+              }}
+            />
+          )}
+        </div>
+        <span className="text-[10px] font-medium"
+          style={{ color: statusColor }}>
+          {data.status === 'running' ? '⏳ 执行中' :
+           data.status === 'success' ? '✅ 完成' :
+           data.status === 'failed' ? '❌ 失败' :
+           '⬜ 待执行'}
         </span>
+        {data.status === 'success' && data.elapsed && (
+          <span className="text-[9px] text-gray-500 ml-0.5">{data.elapsed}s</span>
+        )}
       </div>
 
       {/* Config summary */}
