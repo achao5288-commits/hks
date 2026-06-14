@@ -7,7 +7,7 @@ import requests
 from typing import Optional
 
 SILICON_FLOW_API = "https://api.siliconflow.cn/v1/chat/completions"
-SILICON_FLOW_KEY = "sk-your-api-key-here"  # Replace with your Silicon Flow API key
+SILICON_FLOW_KEY = "sk-rxjyoehcradmpjkjvadsyanlsgudzwuxaqketukgwhvjjgcj"
 DEFAULT_MODEL = "deepseek-ai/DeepSeek-V3"
 
 SYSTEM_PROMPT = """You are an expert workflow automation configuration assistant.
@@ -189,11 +189,15 @@ Rules:
 3. Node positions: space 300px horizontally (80, 380, 680, 980, 1280), keep Y around 120-250.
 4. Include a schedule_trigger node at the START of every workflow unless the user explicitly says manual trigger.
 5. ALWAYS include data_process between crawler/rss and excel/email for data cleaning.
-6. CRITICAL for URLs: ALWAYS use local demo pages for scraping. For world cup/sports use http://localhost:5173/demo-worldcup.html. For news/media use http://localhost:5173/demo-news.html. Never use external URLs unless the user explicitly provides one.
-7. CRITICAL for CSS selectors on demo pages:
-   - For demo-worldcup.html (World Cup page): use ".team.home" for home team, ".team.away" for away team, ".score" for score, ".match-date" for date, ".match-venue" for venue, "[data-round]" for round/stage, ".match-log" for match events log.
-   - For demo-news.html (News page): use ".title" for title, ".summary" for summary, ".source" for source, ".time" for time.
-   Each selector object MUST have "name" (Chinese field name) and "selector" (CSS selector string). The "attribute" field must be empty string "" (NOT "textContent") to get text content. Each selector object must have "name" and "selector" fields.
+6. CRITICAL for URLs: ALWAYS use local demo pages.
+   - For World Cup → http://localhost:5173/demo-worldcup.html (2022卡塔尔世界杯真实数据)
+   - For news/media → http://localhost:5173/demo-news.html
+   - If the user asks for data that doesn't exist in any demo page (e.g., 2026 World Cup which hasn't happened yet), set the workflow name to include "无可用数据" and explain in the description that the requested data source is not available. Do NOT fabricate fake data or fake pages.
+   Never use external URLs unless the user explicitly provides one.
+7. CRITICAL for CSS selectors (ALL World Cup pages use identical structure):
+   - For ANY worldcup page: ".team.home", ".team.away", ".score", ".match-date", ".match-venue", "[data-round]", ".match-log"
+   - For news page: ".title", ".summary", ".source", ".time"
+   Each selector MUST have "name" (Chinese) and "selector" (CSS string). "attribute" must be "" (NOT "textContent"). Each selector object must have "name" and "selector" fields.
 8. For email - extract sender, recipient, password from the user's words. Set dry_run to false when real credentials are provided.
 9. Generate meaningful Chinese labels for each node.
 10. For email body: use HTML with inline table showing data rows. Use expressions like ${node_id.data.rows[0].field} to embed upstream data. The field names should match the data_process output column names.
@@ -201,6 +205,8 @@ Rules:
 12. For data_process field_mapping: the keys are the web_crawler selector "name" values, the values are Chinese display names. Keep the mapping direction correct.
 13. For QQ email, use provider="qq", smtp_host="smtp.qq.com", smtp_port=465. For 163, use provider="163", smtp_host="smtp.163.com", smtp_port=465.
 14. For excel_chart output_path: leave it empty string "" to auto-save to Desktop.
+15. For data_process: fill_missing must be string "N/A" (NOT boolean). drop_duplicates/sort_ascending must be boolean.
+16. For data_process filters: MUST be an array of objects like [{"column":"标题","operator":"contains","value":"AI"}]. Valid operators: equals, not_equals, contains, greater_than, less_than. NEVER use string format like "column.contains('x')".
 12. Create a sensible pipeline: trigger -> data_source -> process -> output -> notify.
 
 User requirement: %s

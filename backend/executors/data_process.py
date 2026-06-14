@@ -104,9 +104,9 @@ class DataProcessExecutor(BaseExecutor):
         if config.get("drop_duplicates", True):
             df = df.drop_duplicates()
 
-        # Fill missing values
+        # Fill missing values (ensure string, ignore boolean true)
         fill_value = config.get("fill_missing", "")
-        if fill_value:
+        if fill_value and isinstance(fill_value, str):
             df = df.fillna(fill_value)
 
         # Data type conversions
@@ -125,9 +125,13 @@ class DataProcessExecutor(BaseExecutor):
                 except Exception:
                     pass
 
-        # Apply filters
+        # Apply filters (handle both object format and malformed string format)
         filters = config.get("filters", [])
         for f in filters:
+            if isinstance(f, str):
+                continue  # Skip malformed string entries
+            if not isinstance(f, dict):
+                continue
             col = f.get("column", "")
             op = f.get("operator", "equals")
             val = f.get("value", "")
@@ -174,6 +178,10 @@ class DataProcessExecutor(BaseExecutor):
         """Collect data from all upstream nodes in context."""
         all_rows = []
         for node_id, result in context.items():
+            if isinstance(result, str):
+                continue  # Skip string values in context
+            if not isinstance(result, dict):
+                continue  # Skip non-dict values
             data = result.get("data", result)
             if isinstance(data, dict):
                 # Check for common patterns
